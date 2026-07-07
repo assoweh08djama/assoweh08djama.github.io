@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arcelik Beko - Dashboard</title>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --panel: #ffffff;
+      --panel-soft: #fbfaf7;
+      --text: #16212b;
+      --muted: #667085;
+      --line: #dde3ea;
+      --accent: #173d4d;
+      --accent-2: #e07a2f;
+      --accent-3: #5f7c8a;
+      --shadow: 0 18px 40px rgba(18, 28, 36, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(224, 122, 47, 0.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(23, 61, 77, 0.12), transparent 26%),
+        linear-gradient(180deg, #f9f6f1 0%, var(--bg) 100%);
+      font-family: "Trebuchet MS", "Verdana", sans-serif;
+    }
+    .wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 30px 20px 54px;
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      padding: 28px 28px 24px;
+      color: white;
+      background: linear-gradient(135deg, #173d4d 0%, #20596e 56%, #e07a2f 100%);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(255,255,255,0.12) 0%, transparent 34%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2), transparent 28%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      margin: 16px 0 10px;
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.02;
+      max-width: 860px;
+    }
+    .hero p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 920px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+      align-items: start;
+    }
+    .hero-panel {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 16px 18px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-panel h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.78);
+    }
+    .hero-panel ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0 22px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      min-height: 126px;
+    }
+    .stat .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .stat .value {
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+    .stat .desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card.wide {
+      grid-column: 1 / -1;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+    .card p.sub {
+      margin: -2px 0 16px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .chart {
+      width: 100%;
+      display: block;
+    }
+    .chart-title {
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      fill: var(--text);
+    }
+    .grid-line {
+      stroke: #e7ecf1;
+      stroke-width: 1;
+      stroke-dasharray: 4 6;
+    }
+    .axis-line {
+      stroke: #9aa8b4;
+      stroke-width: 1.2;
+    }
+    .axis-label, .bar-label, .bar-value {
+      fill: #43515d;
+      font-size: 12px;
+    }
+    .bar-label {
+      font-size: 13px;
+    }
+    .bar-value {
+      font-weight: 700;
+      fill: #1f2d38;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: white;
+    }
+    thead th {
+      background: #edf3f7;
+      color: #18313f;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    tbody tr:nth-child(even) td {
+      background: #fbfcfd;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    @media (max-width: 1180px) {
+      .stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 760px) {
+      .wrap {
+        padding: 16px 12px 32px;
+      }
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+      .stat .value {
+        font-size: 24px;
+      }
+      .card {
+        padding: 14px;
+      }
+      th, td {
+        padding: 10px 10px;
+      }
+    }
+    </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Arcelik Beko Power BI Dashboard Data</div>
+      <h1>Dashboard stratégique à partir des vraies données Excel</h1>
+      <p>
+        Analyse visuelle générée directement depuis le classeur <strong>Arcelik_Beko_PowerBI_Dashboard_Data.xlsx</strong>.
+        Le tableau de bord synthétise le chiffre d’affaires, la croissance, la marge brute et la part de marché par pays,
+        région, segment produit et année.
+      </p>
+      <div class="hero-grid">
+        <div class="hero-panel">
+          <h3>Lecture rapide</h3>
+          <ul>
+            <li>Pays leader: Egypt avec 7 260.0 M€</li><li>Segment leader: Gros électroménager avec 27 695.0 M€</li><li>Année leader: 2024 avec 11 514.0 M€</li>
+          </ul>
+        </div>
+        <div class="hero-panel">
+          <h3>Structure du jeu de données</h3>
+          <ul>
+            <li>60 observations consolidées.</li>
+            <li>5 années suivies de 2020 à 2024.</li>
+            <li>4 régions, 6 pays et 2 segments produits.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><div class="label">CA total</div><div class="value">42 377.0 M€</div><div class="desc">Chiffre d’affaires cumulé sur les 60 lignes.</div></div><div class="stat"><div class="label">Croissance moyenne</div><div class="value">8,5%</div><div class="desc">Moyenne des variations YoY observées.</div></div><div class="stat"><div class="label">Marge brute moyenne</div><div class="value">24,4%</div><div class="desc">Niveau moyen de rentabilité brute.</div></div><div class="stat"><div class="label">Part de marché moyenne</div><div class="value">12,5%</div><div class="desc">Moyenne simple sur les observations.</div></div><div class="stat"><div class="label">Pays #1</div><div class="value">Egypt</div><div class="desc">7 260.0 M€ de CA.</div></div><div class="stat"><div class="label">Segment #1</div><div class="value">Gros électroménager</div><div class="desc">27 695.0 M€ de CA.</div></div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Chiffre d’affaires par pays</h2>
+        <p class="sub">Lecture du poids de chaque marché national sur la base du CA cumulé.</p>
+        <div class="chart"><svg viewBox="0 0 960 420" role="img" aria-label="CA par pays"><rect x="0" y="0" width="960" height="420" rx="20" fill="white"/><text x="28" y="34" class="chart-title">CA par pays</text><line x1="190.0" y1="56" x2="190.0" y2="392" class="grid-line"/><line x1="372.5" y1="56" x2="372.5" y2="392" class="grid-line"/><line x1="555.0" y1="56" x2="555.0" y2="392" class="grid-line"/><line x1="737.5" y1="56" x2="737.5" y2="392" class="grid-line"/><line x1="920.0" y1="56" x2="920.0" y2="392" class="grid-line"/><text x="176" y="89.0" text-anchor="end" class="bar-label">Egypt</text><rect x="190" y="71.0" width="730.0" height="26.0" rx="9" fill="#173d4d"/><text x="930.0" y="89.0" class="bar-value">7 260.0 M€</text><text x="176" y="145.0" text-anchor="end" class="bar-label">France</text><rect x="190" y="127.0" width="727.6" height="26.0" rx="9" fill="#173d4d"/><text x="927.6" y="145.0" class="bar-value">7 236.0 M€</text><text x="176" y="201.0" text-anchor="end" class="bar-label">Pakistan</text><rect x="190" y="183.0" width="713.4" height="26.0" rx="9" fill="#173d4d"/><text x="913.4" y="201.0" class="bar-value">7 095.0 M€</text><text x="176" y="257.0" text-anchor="end" class="bar-label">Germany</text><rect x="190" y="239.0" width="697.5" height="26.0" rx="9" fill="#173d4d"/><text x="897.5" y="257.0" class="bar-value">6 937.0 M€</text><text x="176" y="313.0" text-anchor="end" class="bar-label">South Africa</text><rect x="190" y="295.0" width="696.6" height="26.0" rx="9" fill="#173d4d"/><text x="896.6" y="313.0" class="bar-value">6 928.0 M€</text><text x="176" y="369.0" text-anchor="end" class="bar-label">Spain</text><rect x="190" y="351.0" width="695.9" height="26.0" rx="9" fill="#173d4d"/><text x="895.9" y="369.0" class="bar-value">6 921.0 M€</text><line x1="190" y1="392" x2="920" y2="392" class="axis-line"/></svg></div>
+      </article>
+
+      <article class="card">
+        <h2>Chiffre d’affaires par région</h2>
+        <p class="sub">Comparaison rapide des zones géographiques couvertes par le fichier.</p>
+        <div class="chart"><svg viewBox="0 0 960 420" role="img" aria-label="CA par région"><rect x="0" y="0" width="960" height="420" rx="20" fill="white"/><text x="28" y="34" class="chart-title">CA par région</text><line x1="190.0" y1="56" x2="190.0" y2="392" class="grid-line"/><line x1="372.5" y1="56" x2="372.5" y2="392" class="grid-line"/><line x1="555.0" y1="56" x2="555.0" y2="392" class="grid-line"/><line x1="737.5" y1="56" x2="737.5" y2="392" class="grid-line"/><line x1="920.0" y1="56" x2="920.0" y2="392" class="grid-line"/><text x="176" y="103.0" text-anchor="end" class="bar-label">Europe</text><rect x="190" y="85.0" width="730.0" height="26.0" rx="9" fill="#e07a2f"/><text x="930.0" y="103.0" class="bar-value">21 094.0 M€</text><text x="176" y="187.0" text-anchor="end" class="bar-label">MENA</text><rect x="190" y="169.0" width="251.2" height="26.0" rx="9" fill="#e07a2f"/><text x="451.2" y="187.0" class="bar-value">7 260.0 M€</text><text x="176" y="271.0" text-anchor="end" class="bar-label">Asie</text><rect x="190" y="253.0" width="245.5" height="26.0" rx="9" fill="#e07a2f"/><text x="445.5" y="271.0" class="bar-value">7 095.0 M€</text><text x="176" y="355.0" text-anchor="end" class="bar-label">Afrique</text><rect x="190" y="337.0" width="239.8" height="26.0" rx="9" fill="#e07a2f"/><text x="439.8" y="355.0" class="bar-value">6 928.0 M€</text><line x1="190" y1="392" x2="920" y2="392" class="axis-line"/></svg></div>
+      </article>
+
+      <article class="card">
+        <h2>Chiffre d’affaires par segment</h2>
+        <p class="sub">Répartition entre gros électroménager et électronique.</p>
+        <div class="chart"><svg viewBox="0 0 960 420" role="img" aria-label="CA par segment"><rect x="0" y="0" width="960" height="420" rx="20" fill="white"/><text x="28" y="34" class="chart-title">CA par segment</text><line x1="190.0" y1="56" x2="190.0" y2="392" class="grid-line"/><line x1="372.5" y1="56" x2="372.5" y2="392" class="grid-line"/><line x1="555.0" y1="56" x2="555.0" y2="392" class="grid-line"/><line x1="737.5" y1="56" x2="737.5" y2="392" class="grid-line"/><line x1="920.0" y1="56" x2="920.0" y2="392" class="grid-line"/><text x="176" y="145.0" text-anchor="end" class="bar-label">Gros électroménager</text><rect x="190" y="127.0" width="730.0" height="26.0" rx="9" fill="#5f7c8a"/><text x="930.0" y="145.0" class="bar-value">27 695.0 M€</text><text x="176" y="313.0" text-anchor="end" class="bar-label">Électronique</text><rect x="190" y="295.0" width="387.0" height="26.0" rx="9" fill="#5f7c8a"/><text x="587.0" y="313.0" class="bar-value">14 682.0 M€</text><line x1="190" y1="392" x2="920" y2="392" class="axis-line"/></svg></div>
+      </article>
+
+      <article class="card">
+        <h2>Tendance annuelle du CA</h2>
+        <p class="sub">Évolution du chiffre d’affaires entre 2020 et 2024.</p>
+        <div class="chart"><svg viewBox="0 0 960 420" role="img" aria-label="CA annuel"><rect x="0" y="0" width="960" height="420" rx="20" fill="white"/><text x="28" y="34" class="chart-title">CA annuel</text><line x1="72" y1="56.0" x2="936" y2="56.0" class="grid-line"/><text x="60" y="60.0" text-anchor="end" class="axis-label">11 946.2 M€</text><line x1="72" y1="133.5" x2="936" y2="133.5" class="grid-line"/><text x="60" y="137.5" text-anchor="end" class="axis-label">10 379.6 M€</text><line x1="72" y1="211.0" x2="936" y2="211.0" class="grid-line"/><text x="60" y="215.0" text-anchor="end" class="axis-label">8 813.0 M€</text><line x1="72" y1="288.5" x2="936" y2="288.5" class="grid-line"/><text x="60" y="292.5" text-anchor="end" class="axis-label">7 246.4 M€</text><line x1="72" y1="366.0" x2="936" y2="366.0" class="grid-line"/><text x="60" y="370.0" text-anchor="end" class="axis-label">5 679.8 M€</text><polyline points="72.0,344.6 288.0,315.2 504.0,231.5 720.0,169.7 936.0,77.4" fill="none" stroke="#173d4d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="72.0" cy="344.6" r="5.5" fill="#173d4d"/><text x="72.0" y="402" text-anchor="middle" class="axis-label">2020</text><circle cx="288.0" cy="315.2" r="5.5" fill="#173d4d"/><text x="288.0" y="402" text-anchor="middle" class="axis-label">2021</text><circle cx="504.0" cy="231.5" r="5.5" fill="#173d4d"/><text x="504.0" y="402" text-anchor="middle" class="axis-label">2022</text><circle cx="720.0" cy="169.7" r="5.5" fill="#173d4d"/><text x="720.0" y="402" text-anchor="middle" class="axis-label">2023</text><circle cx="936.0" cy="77.4" r="5.5" fill="#173d4d"/><text x="936.0" y="402" text-anchor="middle" class="axis-label">2024</text><line x1="72" y1="366" x2="936" y2="366" class="axis-line"/></svg></div>
+      </article>
+
+      <article class="card wide">
+        <h2>Classement pays</h2>
+        <p class="sub">CA cumulé, croissance moyenne, marge brute moyenne et part de marché moyenne par pays.</p>
+        <table><thead><tr><th>Pays</th><th>CA</th><th>Croissance moy.</th><th>Marge brute moy.</th><th>Part de marché moy.</th><th>Lignes</th></tr></thead><tbody><tr><td>Egypt</td><td>7 260.0 M€</td><td>8,7%</td><td>25,1%</td><td>12,1%</td><td>10</td></tr><tr><td>France</td><td>7 236.0 M€</td><td>8,7%</td><td>25,0%</td><td>11,0%</td><td>10</td></tr><tr><td>Pakistan</td><td>7 095.0 M€</td><td>8,6%</td><td>24,4%</td><td>14,2%</td><td>10</td></tr><tr><td>Germany</td><td>6 937.0 M€</td><td>7,9%</td><td>23,8%</td><td>13,1%</td><td>10</td></tr><tr><td>South Africa</td><td>6 928.0 M€</td><td>8,7%</td><td>24,4%</td><td>12,2%</td><td>10</td></tr><tr><td>Spain</td><td>6 921.0 M€</td><td>8,3%</td><td>24,0%</td><td>12,6%</td><td>10</td></tr></tbody></table>
+      </article>
+
+      <article class="card wide">
+        <h2>Classement segments</h2>
+        <p class="sub">Même lecture agrégée par segment produit.</p>
+        <table><thead><tr><th>Segment</th><th>CA</th><th>Croissance moy.</th><th>Marge brute moy.</th><th>Part de marché moy.</th><th>Lignes</th></tr></thead><tbody><tr><td>Gros électroménager</td><td>27 695.0 M€</td><td>8,3%</td><td>24,7%</td><td>13,3%</td><td>30</td></tr><tr><td>Électronique</td><td>14 682.0 M€</td><td>8,7%</td><td>24,2%</td><td>11,8%</td><td>30</td></tr></tbody></table>
+      </article>
+
+      <article class="card wide">
+        <h2>Top lignes de données</h2>
+        <p class="sub">Les 10 observations les plus fortes en chiffre d’affaires, avec leur contexte brut.</p>
+        <table><thead><tr><th>Année</th><th>Région</th><th>Pays</th><th>Segment</th><th>CA</th><th>Croissance</th><th>Marge brute</th><th>Part de marché</th></tr></thead><tbody><tr><td>2024</td><td>Europe</td><td>Spain</td><td>Gros électroménager</td><td>1 275.0 M€</td><td>6,0%</td><td>23,0%</td><td>16,6%</td></tr><tr><td>2024</td><td>MENA</td><td>Egypt</td><td>Gros électroménager</td><td>1 269.0 M€</td><td>9,0%</td><td>24,0%</td><td>10,6%</td></tr><tr><td>2024</td><td>Europe</td><td>Germany</td><td>Gros électroménager</td><td>1 255.0 M€</td><td>7,0%</td><td>24,0%</td><td>10,6%</td></tr><tr><td>2024</td><td>Afrique</td><td>South Africa</td><td>Gros électroménager</td><td>1 241.0 M€</td><td>10,0%</td><td>26,0%</td><td>16,6%</td></tr><tr><td>2024</td><td>Europe</td><td>France</td><td>Gros électroménager</td><td>1 231.0 M€</td><td>9,0%</td><td>23,0%</td><td>10,6%</td></tr><tr><td>2024</td><td>Asie</td><td>Pakistan</td><td>Gros électroménager</td><td>1 223.0 M€</td><td>9,0%</td><td>27,0%</td><td>11,6%</td></tr><tr><td>2023</td><td>Afrique</td><td>South Africa</td><td>Gros électroménager</td><td>1 090.0 M€</td><td>10,0%</td><td>21,0%</td><td>18,2%</td></tr><tr><td>2023</td><td>Europe</td><td>France</td><td>Gros électroménager</td><td>1 088.0 M€</td><td>8,0%</td><td>28,0%</td><td>9,2%</td></tr><tr><td>2023</td><td>Asie</td><td>Pakistan</td><td>Gros électroménager</td><td>1 036.0 M€</td><td>12,0%</td><td>23,0%</td><td>16,2%</td></tr><tr><td>2023</td><td>Europe</td><td>Spain</td><td>Gros électroménager</td><td>1 021.0 M€</td><td>11,0%</td><td>27,0%</td><td>14,2%</td></tr></tbody></table>
+      </article>
+    </section>
+
+    <div class="footer-note">
+      Le dashboard a été généré à partir du fichier Excel source sans dépendances externes. Les graphiques sont en SVG
+      natif, donc le fichier HTML reste autonome et ouvrable dans n'importe quel navigateur.
+    </div>
+  </div>
+</body>
+</html>

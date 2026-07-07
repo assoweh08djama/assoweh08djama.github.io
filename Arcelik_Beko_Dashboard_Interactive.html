@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arcelik Beko - Dashboard interactif</title>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --panel: #ffffff;
+      --text: #16212b;
+      --muted: #667085;
+      --line: #dde3ea;
+      --shadow: 0 18px 40px rgba(18, 28, 36, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(224, 122, 47, 0.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(23, 61, 77, 0.12), transparent 26%),
+        linear-gradient(180deg, #f9f6f1 0%, var(--bg) 100%);
+      font-family: "Trebuchet MS", "Verdana", sans-serif;
+    }
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px 54px;
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      padding: 28px;
+      color: white;
+      background: linear-gradient(135deg, #173d4d 0%, #20596e 56%, #e07a2f 100%);
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(255,255,255,0.12) 0%, transparent 34%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2), transparent 28%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      margin: 16px 0 10px;
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.02;
+      max-width: 880px;
+    }
+    .hero p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 980px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .filters {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .filter {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .filter label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.82);
+    }
+    .filter select, .filter button {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
+      padding: 11px 12px;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      font: inherit;
+      outline: none;
+    }
+    .filter option { color: #16212b; }
+    .filter button {
+      cursor: pointer;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.18);
+    }
+    .filter button:hover { background: rgba(255, 255, 255, 0.26); }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+      align-items: start;
+    }
+    .hero-panel {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 16px 18px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-panel h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.78);
+    }
+    .hero-panel ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    .muted-line {
+      margin: 8px 2px 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0 22px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      min-height: 126px;
+    }
+    .stat .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .stat .value {
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+    .stat .desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card.wide { grid-column: 1 / -1; }
+    .card h2 {
+      margin: 0 0 10px;
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+    .card p.sub {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .chart { width: 100%; display: block; }
+    .chart-title {
+      font-family: "Palatino Linotype", Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      fill: var(--text);
+    }
+    .grid-line {
+      stroke: #e7ecf1;
+      stroke-width: 1;
+      stroke-dasharray: 4 6;
+    }
+    .axis-line {
+      stroke: #9aa8b4;
+      stroke-width: 1.2;
+    }
+    .axis-label, .bar-label, .bar-value {
+      fill: #43515d;
+      font-size: 12px;
+    }
+    .bar-label { font-size: 13px; }
+    .bar-value {
+      font-weight: 700;
+      fill: #1f2d38;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: white;
+    }
+    thead th {
+      background: #edf3f7;
+      color: #18313f;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    tbody tr:nth-child(even) td { background: #fbfcfd; }
+    tbody tr:last-child td { border-bottom: none; }
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    @media (max-width: 1180px) {
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .wrap { padding: 16px 12px 32px; }
+      .filters { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat .value { font-size: 24px; }
+      .card { padding: 14px; }
+      th, td { padding: 10px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Arcelik Beko Power BI Dashboard Data</div>
+      <h1>Dashboard interactif construit à partir des vraies données Excel</h1>
+      <p>
+        Ce dashboard synthétise le chiffre d’affaires, la croissance YoY, la marge brute et la part de marché.
+        Les filtres ci-dessous recalculent les KPI, les graphiques et les tableaux instantanément dans le navigateur.
+      </p>
+      <div class="filters">
+        <div class="filter">
+          <label for="filter-year">Année</label>
+          <select id="filter-year">
+            <option value="ALL">Tous</option>
+            <option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option>
+          </select>
+        </div>
+        <div class="filter">
+          <label for="filter-region">Région</label>
+          <select id="filter-region">
+            <option value="ALL">Toutes</option>
+            <option value="Afrique">Afrique</option><option value="Asie">Asie</option><option value="Europe">Europe</option><option value="MENA">MENA</option>
+          </select>
+        </div>
+        <div class="filter">
+          <label for="filter-country">Pays</label>
+          <select id="filter-country">
+            <option value="ALL">Tous</option>
+            <option value="Egypt">Egypt</option><option value="France">France</option><option value="Germany">Germany</option><option value="Pakistan">Pakistan</option><option value="South Africa">South Africa</option><option value="Spain">Spain</option>
+          </select>
+        </div>
+        <div class="filter">
+          <label for="filter-segment">Segment</label>
+          <select id="filter-segment">
+            <option value="ALL">Tous</option>
+            <option value="Gros électroménager">Gros électroménager</option><option value="Électronique">Électronique</option>
+          </select>
+        </div>
+        <div class="filter">
+          <label>&nbsp;</label>
+          <button id="reset-filters" type="button">Réinitialiser</button>
+        </div>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-panel">
+          <h3>Lecture rapide</h3>
+          <ul>
+            <li>60 observations consolidées.</li>
+            <li>5 années suivies de 2020 à 2024.</li>
+            <li>4 régions, 6 pays et 2 segments produits.</li>
+          </ul>
+        </div>
+        <div class="hero-panel">
+          <h3>Ce que tu vois</h3>
+          <ul>
+            <li>Un style plus proche d’un tableau de bord exécutif.</li>
+            <li>Des graphiques SVG natifs, sans dépendance externe.</li>
+            <li>Un fichier HTML autonome, ouvrable directement.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="muted-line" id="status-line">Chargement du jeu de données...</div>
+
+    <section class="stats">
+      <div class="stat"><div class="label">CA total</div><div class="value" id="kpi-total">-</div><div class="desc" id="kpi-total-desc">-</div></div>
+      <div class="stat"><div class="label">Croissance moyenne</div><div class="value" id="kpi-growth">-</div><div class="desc" id="kpi-growth-desc">-</div></div>
+      <div class="stat"><div class="label">Marge brute moyenne</div><div class="value" id="kpi-margin">-</div><div class="desc" id="kpi-margin-desc">-</div></div>
+      <div class="stat"><div class="label">Part de marché moyenne</div><div class="value" id="kpi-share">-</div><div class="desc" id="kpi-share-desc">-</div></div>
+      <div class="stat"><div class="label">Pays #1</div><div class="value" id="kpi-country">-</div><div class="desc" id="kpi-country-desc">-</div></div>
+      <div class="stat"><div class="label">Segment #1</div><div class="value" id="kpi-segment">-</div><div class="desc" id="kpi-segment-desc">-</div></div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Chiffre d’affaires par pays</h2>
+        <p class="sub">Poids des marchés nationaux sur le chiffre d’affaires cumulé du filtre courant.</p>
+        <div id="chart-country" class="chart"></div>
+      </article>
+
+      <article class="card">
+        <h2>Chiffre d’affaires par région</h2>
+        <p class="sub">Comparaison rapide des zones géographiques couvertes par le fichier.</p>
+        <div id="chart-region" class="chart"></div>
+      </article>
+
+      <article class="card">
+        <h2>Chiffre d’affaires par segment</h2>
+        <p class="sub">Lecture entre gros électroménager et électronique.</p>
+        <div id="chart-segment" class="chart"></div>
+      </article>
+
+      <article class="card">
+        <h2>Tendance annuelle du CA</h2>
+        <p class="sub">Évolution du chiffre d’affaires entre 2020 et 2024.</p>
+        <div id="chart-year" class="chart"></div>
+      </article>
+
+      <article class="card wide">
+        <h2>Classement pays</h2>
+        <p class="sub">CA cumulé, croissance moyenne, marge brute moyenne et part de marché moyenne par pays.</p>
+        <div id="table-country"></div>
+      </article>
+
+      <article class="card wide">
+        <h2>Classement segments</h2>
+        <p class="sub">Même lecture agrégée par segment produit.</p>
+        <div id="table-segment"></div>
+      </article>
+
+      <article class="card wide">
+        <h2>Top lignes de données</h2>
+        <p class="sub">Les 10 observations les plus fortes en chiffre d’affaires, avec leur contexte brut.</p>
+        <div id="table-raw"></div>
+      </article>
+    </section>
+
+    <div class="footer-note">
+      Le dashboard a été généré à partir du fichier Excel source sans dépendances externes. Les graphiques sont en SVG
+      natif, donc le fichier HTML reste autonome et ouvrable dans n'importe quel navigateur.
+    </div>
+  </div>
+  <script>
+    const baseData = [{"annee": "2020", "region": "Europe", "pays": "France", "segment": "Gros électroménager", "ca": 670.0, "growth": -2.0, "margin": 27.0, "share": 7.0}, {"annee": "2020", "region": "Europe", "pays": "France", "segment": "Électronique", "ca": 317.5, "growth": -4.0, "margin": 21.0, "share": 8.0}, {"annee": "2020", "region": "Europe", "pays": "Germany", "segment": "Gros électroménager", "ca": 584.0, "growth": -5.0, "margin": 22.0, "share": 17.0}, {"annee": "2020", "region": "Europe", "pays": "Germany", "segment": "Électronique", "ca": 312.5, "growth": -1.0, "margin": 25.0, "share": 11.0}, {"annee": "2020", "region": "Europe", "pays": "Spain", "segment": "Gros électroménager", "ca": 694.0, "growth": -1.0, "margin": 27.0, "share": 16.0}, {"annee": "2020", "region": "Europe", "pays": "Spain", "segment": "Électronique", "ca": 278.5, "growth": -3.0, "margin": 23.0, "share": 11.0}, {"annee": "2020", "region": "MENA", "pays": "Egypt", "segment": "Gros électroménager", "ca": 648.0, "growth": -5.0, "margin": 22.0, "share": 13.0}, {"annee": "2020", "region": "MENA", "pays": "Egypt", "segment": "Électronique", "ca": 424.5, "growth": -1.0, "margin": 26.0, "share": 15.0}, {"annee": "2020", "region": "Asie", "pays": "Pakistan", "segment": "Gros électroménager", "ca": 699.0, "growth": -1.0, "margin": 22.0, "share": 16.0}, {"annee": "2020", "region": "Asie", "pays": "Pakistan", "segment": "Électronique", "ca": 377.5, "growth": -3.0, "margin": 27.0, "share": 16.0}, {"annee": "2020", "region": "Afrique", "pays": "South Africa", "segment": "Gros électroménager", "ca": 716.0, "growth": -4.0, "margin": 28.0, "share": 15.0}, {"annee": "2020", "region": "Afrique", "pays": "South Africa", "segment": "Électronique", "ca": 390.5, "growth": -5.0, "margin": 21.0, "share": 10.0}, {"annee": "2021", "region": "Europe", "pays": "France", "segment": "Gros électroménager", "ca": 819.0, "growth": 12.0, "margin": 24.0, "share": 14.4}, {"annee": "2021", "region": "Europe", "pays": "France", "segment": "Électronique", "ca": 351.0, "growth": 13.0, "margin": 25.0, "share": 10.4}, {"annee": "2021", "region": "Europe", "pays": "Germany", "segment": "Gros électroménager", "ca": 736.0, "growth": 12.0, "margin": 22.0, "share": 13.4}, {"annee": "2021", "region": "Europe", "pays": "Germany", "segment": "Électronique", "ca": 348.0, "growth": 12.0, "margin": 23.0, "share": 10.4}, {"annee": "2021", "region": "Europe", "pays": "Spain", "segment": "Gros électroménager", "ca": 707.0, "growth": 11.0, "margin": 21.0, "share": 15.4}, {"annee": "2021", "region": "Europe", "pays": "Spain", "segment": "Électronique", "ca": 384.0, "growth": 11.0, "margin": 25.0, "share": 7.4}, {"annee": "2021", "region": "MENA", "pays": "Egypt", "segment": "Gros électroménager", "ca": 800.0, "growth": 14.0, "margin": 27.0, "share": 7.4}, {"annee": "2021", "region": "MENA", "pays": "Egypt", "segment": "Électronique", "ca": 396.0, "growth": 10.0, "margin": 25.0, "share": 7.4}, {"annee": "2021", "region": "Asie", "pays": "Pakistan", "segment": "Gros électroménager", "ca": 731.0, "growth": 10.0, "margin": 24.0, "share": 14.4}, {"annee": "2021", "region": "Asie", "pays": "Pakistan", "segment": "Électronique", "ca": 348.0, "growth": 14.0, "margin": 25.0, "share": 15.4}, {"annee": "2021", "region": "Afrique", "pays": "South Africa", "segment": "Gros électroménager", "ca": 746.0, "growth": 12.0, "margin": 24.0, "share": 15.4}, {"annee": "2021", "region": "Afrique", "pays": "South Africa", "segment": "Électronique", "ca": 340.0, "growth": 14.0, "margin": 24.0, "share": 9.4}, {"annee": "2022", "region": "Europe", "pays": "France", "segment": "Gros électroménager", "ca": 961.0, "growth": 17.0, "margin": 27.0, "share": 16.8}, {"annee": "2022", "region": "Europe", "pays": "France", "segment": "Électronique", "ca": 542.0, "growth": 14.0, "margin": 25.0, "share": 9.8}, {"annee": "2022", "region": "Europe", "pays": "Germany", "segment": "Gros électroménager", "ca": 974.0, "growth": 14.0, "margin": 28.0, "share": 9.8}, {"annee": "2022", "region": "Europe", "pays": "Germany", "segment": "Électronique", "ca": 440.0, "growth": 16.0, "margin": 21.0, "share": 12.8}, {"annee": "2022", "region": "Europe", "pays": "Spain", "segment": "Gros électroménager", "ca": 878.0, "growth": 14.0, "margin": 21.0, "share": 7.8}, {"annee": "2022", "region": "Europe", "pays": "Spain", "segment": "Électronique", "ca": 540.0, "growth": 17.0, "margin": 27.0, "share": 13.8}, {"annee": "2022", "region": "MENA", "pays": "Egypt", "segment": "Gros électroménager", "ca": 899.0, "growth": 14.0, "margin": 27.0, "share": 12.8}, {"annee": "2022", "region": "MENA", "pays": "Egypt", "segment": "Électronique", "ca": 488.0, "growth": 17.0, "margin": 28.0, "share": 10.8}, {"annee": "2022", "region": "Asie", "pays": "Pakistan", "segment": "Gros électroménager", "ca": 849.0, "growth": 14.0, "margin": 23.0, "share": 11.8}, {"annee": "2022", "region": "Asie", "pays": "Pakistan", "segment": "Électronique", "ca": 518.0, "growth": 13.0, "margin": 23.0, "share": 14.8}, {"annee": "2022", "region": "Afrique", "pays": "South Africa", "segment": "Gros électroménager", "ca": 862.0, "growth": 14.0, "margin": 27.0, "share": 7.8}, {"annee": "2022", "region": "Afrique", "pays": "South Africa", "segment": "Électronique", "ca": 447.0, "growth": 16.0, "margin": 24.0, "share": 9.8}, {"annee": "2023", "region": "Europe", "pays": "France", "segment": "Gros électroménager", "ca": 1088.0, "growth": 8.0, "margin": 28.0, "share": 9.2}, {"annee": "2023", "region": "Europe", "pays": "France", "segment": "Électronique", "ca": 564.5, "growth": 11.0, "margin": 24.0, "share": 14.2}, {"annee": "2023", "region": "Europe", "pays": "Germany", "segment": "Gros électroménager", "ca": 985.0, "growth": 8.0, "margin": 28.0, "share": 18.2}, {"annee": "2023", "region": "Europe", "pays": "Germany", "segment": "Électronique", "ca": 591.5, "growth": 8.0, "margin": 22.0, "share": 13.2}, {"annee": "2023", "region": "Europe", "pays": "Spain", "segment": "Gros électroménager", "ca": 1021.0, "growth": 11.0, "margin": 27.0, "share": 14.2}, {"annee": "2023", "region": "Europe", "pays": "Spain", "segment": "Électronique", "ca": 543.5, "growth": 11.0, "margin": 21.0, "share": 9.2}, {"annee": "2023", "region": "MENA", "pays": "Egypt", "segment": "Gros électroménager", "ca": 1008.0, "growth": 10.0, "margin": 24.0, "share": 14.2}, {"annee": "2023", "region": "MENA", "pays": "Egypt", "segment": "Électronique", "ca": 634.5, "growth": 10.0, "margin": 25.0, "share": 18.2}, {"annee": "2023", "region": "Asie", "pays": "Pakistan", "segment": "Gros électroménager", "ca": 1036.0, "growth": 12.0, "margin": 23.0, "share": 16.2}, {"annee": "2023", "region": "Asie", "pays": "Pakistan", "segment": "Électronique", "ca": 581.5, "growth": 12.0, "margin": 22.0, "share": 12.2}, {"annee": "2023", "region": "Afrique", "pays": "South Africa", "segment": "Gros électroménager", "ca": 1090.0, "growth": 10.0, "margin": 21.0, "share": 18.2}, {"annee": "2023", "region": "Afrique", "pays": "South Africa", "segment": "Électronique", "ca": 503.5, "growth": 10.0, "margin": 23.0, "share": 11.2}, {"annee": "2024", "region": "Europe", "pays": "France", "segment": "Gros électroménager", "ca": 1231.0, "growth": 9.0, "margin": 23.0, "share": 10.6}, {"annee": "2024", "region": "Europe", "pays": "France", "segment": "Électronique", "ca": 692.0, "growth": 9.0, "margin": 26.0, "share": 9.6}, {"annee": "2024", "region": "Europe", "pays": "Germany", "segment": "Gros électroménager", "ca": 1255.0, "growth": 7.0, "margin": 24.0, "share": 10.6}, {"annee": "2024", "region": "Europe", "pays": "Germany", "segment": "Électronique", "ca": 711.0, "growth": 8.0, "margin": 23.0, "share": 14.6}, {"annee": "2024", "region": "Europe", "pays": "Spain", "segment": "Gros électroménager", "ca": 1275.0, "growth": 6.0, "margin": 23.0, "share": 16.6}, {"annee": "2024", "region": "Europe", "pays": "Spain", "segment": "Électronique", "ca": 600.0, "growth": 6.0, "margin": 25.0, "share": 14.6}, {"annee": "2024", "region": "MENA", "pays": "Egypt", "segment": "Gros électroménager", "ca": 1269.0, "growth": 9.0, "margin": 24.0, "share": 10.6}, {"annee": "2024", "region": "MENA", "pays": "Egypt", "segment": "Électronique", "ca": 693.0, "growth": 9.0, "margin": 23.0, "share": 11.6}, {"annee": "2024", "region": "Asie", "pays": "Pakistan", "segment": "Gros électroménager", "ca": 1223.0, "growth": 9.0, "margin": 27.0, "share": 11.6}, {"annee": "2024", "region": "Asie", "pays": "Pakistan", "segment": "Électronique", "ca": 732.0, "growth": 6.0, "margin": 28.0, "share": 13.6}, {"annee": "2024", "region": "Afrique", "pays": "South Africa", "segment": "Gros électroménager", "ca": 1241.0, "growth": 10.0, "margin": 26.0, "share": 16.6}, {"annee": "2024", "region": "Afrique", "pays": "South Africa", "segment": "Électronique", "ca": 592.0, "growth": 10.0, "margin": 26.0, "share": 8.6}];
+    const state = { annee: "ALL", region: "ALL", pays: "ALL", segment: "ALL" };
+
+    const formatMoney = (value) => {
+      if (!Number.isFinite(value)) return "n/a";
+      return new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value) + " M€";
+    };
+    const formatPct = (value) => {
+      if (!Number.isFinite(value)) return "n/a";
+      return new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value) + "%";
+    };
+    const formatCount = (value) => {
+      if (!Number.isFinite(value)) return "n/a";
+      return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(value));
+    };
+    const escapeHtml = (value) => String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+    const sum = (rows, key) => rows.reduce((acc, row) => acc + (Number(row[key]) || 0), 0);
+    const avg = (rows, key) => {
+      const values = rows.map((row) => Number(row[key])).filter((value) => Number.isFinite(value));
+      if (!values.length) return null;
+      return values.reduce((acc, value) => acc + value, 0) / values.length;
+    };
+    const filterRows = () => baseData.filter((row) => {
+      if (state.annee !== "ALL" && String(row.annee) !== state.annee) return false;
+      if (state.region !== "ALL" && String(row.region) !== state.region) return false;
+      if (state.pays !== "ALL" && String(row.pays) !== state.pays) return false;
+      if (state.segment !== "ALL" && String(row.segment) !== state.segment) return false;
+      return true;
+    });
+    const groupStats = (rows, key) => {
+      const map = new Map();
+      rows.forEach((row) => {
+        const label = String(row[key] ?? "").trim() || "n/a";
+        if (!map.has(label)) map.set(label, []);
+        map.get(label).push(row);
+      });
+      return Array.from(map.entries()).map(([label, items]) => ({
+        label,
+        revenue: sum(items, "ca"),
+        avgGrowth: avg(items, "growth"),
+        avgMargin: avg(items, "margin"),
+        avgShare: avg(items, "share"),
+        rows: items.length,
+      })).sort((a, b) => b.revenue - a.revenue);
+    };
+    const yearlyStats = (rows) => {
+      const map = new Map();
+      rows.forEach((row) => {
+        const label = String(row.annee ?? "").trim() || "n/a";
+        if (!map.has(label)) map.set(label, []);
+        map.get(label).push(row);
+      });
+      return Array.from(map.entries()).map(([label, items]) => ({
+        label,
+        revenue: sum(items, "ca"),
+      })).sort((a, b) => Number(a.label) - Number(b.label));
+    };
+    function renderBarChart(title, items, color) {
+      const width = 960, height = 420, marginLeft = 186, marginRight = 38, marginTop = 56, marginBottom = 28;
+      const plotWidth = width - marginLeft - marginRight;
+      const plotHeight = height - marginTop - marginBottom;
+      const count = Math.max(items.length, 1);
+      const rowHeight = plotHeight / count;
+      const barHeight = Math.min(26, rowHeight * 0.62);
+      const maxValue = Math.max(1, ...items.map((item) => item.revenue || 0));
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(title)}">`;
+      svg += `<rect x="0" y="0" width="${width}" height="${height}" rx="20" fill="white"></rect>`;
+      svg += `<text x="28" y="34" class="chart-title">${escapeHtml(title)}</text>`;
+      for (let tick = 0; tick < 5; tick += 1) {
+        const x = marginLeft + (plotWidth * tick / 4);
+        svg += `<line x1="${x}" y1="${marginTop}" x2="${x}" y2="${height - marginBottom}" class="grid-line"></line>`;
+      }
+      if (!items.length) {
+        svg += `<text x="50%" y="50%" text-anchor="middle" class="axis-label">Aucune donnée disponible pour ce filtre</text>`;
+      }
+      items.forEach((item, index) => {
+        const centerY = marginTop + rowHeight * index + rowHeight / 2;
+        const barWidth = (item.revenue / maxValue) * plotWidth;
+        const top = centerY - barHeight / 2;
+        svg += `<text x="${marginLeft - 14}" y="${centerY + 5}" text-anchor="end" class="bar-label">${escapeHtml(item.label)}</text>`;
+        svg += `<rect x="${marginLeft}" y="${top}" width="${barWidth}" height="${barHeight}" rx="9" fill="${color}"></rect>`;
+        svg += `<text x="${marginLeft + barWidth + 10}" y="${centerY + 5}" class="bar-value">${escapeHtml(formatMoney(item.revenue))}</text>`;
+      });
+      svg += `<line x1="${marginLeft}" y1="${height - marginBottom}" x2="${width - marginRight}" y2="${height - marginBottom}" class="axis-line"></line>`;
+      svg += `</svg>`;
+      return svg;
+    }
+    function renderLineChart(title, items, color) {
+      const width = 960, height = 420, marginLeft = 72, marginRight = 24, marginTop = 56, marginBottom = 54;
+      const plotWidth = width - marginLeft - marginRight;
+      const plotHeight = height - marginTop - marginBottom;
+      if (!items.length) {
+        return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(title)}"><rect x="0" y="0" width="${width}" height="${height}" rx="20" fill="white"></rect><text x="28" y="34" class="chart-title">${escapeHtml(title)}</text><text x="50%" y="50%" text-anchor="middle" class="axis-label">Aucune donnée disponible pour ce filtre</text></svg>`;
+      }
+      const values = items.map((item) => item.revenue);
+      let minValue = Math.min(...values, 0);
+      let maxValue = Math.max(...values, 1);
+      if (Math.abs(maxValue - minValue) < 1e-9) {
+        maxValue += 1;
+        minValue -= 1;
+      }
+      const padding = (maxValue - minValue) * 0.08;
+      minValue -= padding;
+      maxValue += padding;
+      const yFor = (value) => marginTop + (maxValue - value) / (maxValue - minValue) * plotHeight;
+      const xFor = (index) => items.length === 1 ? marginLeft + plotWidth / 2 : marginLeft + (plotWidth * index / (items.length - 1));
+      const points = items.map((item, index) => `${xFor(index).toFixed(1)},${yFor(item.revenue).toFixed(1)}`).join(" ");
+      let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(title)}">`;
+      svg += `<rect x="0" y="0" width="${width}" height="${height}" rx="20" fill="white"></rect>`;
+      svg += `<text x="28" y="34" class="chart-title">${escapeHtml(title)}</text>`;
+      for (let tick = 0; tick < 5; tick += 1) {
+        const y = marginTop + plotHeight * tick / 4;
+        const tickValue = maxValue - (maxValue - minValue) * tick / 4;
+        svg += `<line x1="${marginLeft}" y1="${y}" x2="${width - marginRight}" y2="${y}" class="grid-line"></line>`;
+        svg += `<text x="${marginLeft - 12}" y="${y + 4}" text-anchor="end" class="axis-label">${escapeHtml(formatMoney(tickValue))}</text>`;
+      }
+      svg += `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></polyline>`;
+      items.forEach((item, index) => {
+        const x = xFor(index);
+        const y = yFor(item.revenue);
+        svg += `<circle cx="${x}" cy="${y}" r="5.5" fill="${color}"></circle>`;
+        svg += `<text x="${x}" y="${height - 18}" text-anchor="middle" class="axis-label">${escapeHtml(item.label)}</text>`;
+      });
+      svg += `<line x1="${marginLeft}" y1="${height - marginBottom}" x2="${width - marginRight}" y2="${height - marginBottom}" class="axis-line"></line>`;
+      svg += `</svg>`;
+      return svg;
+    }
+    function renderTable(headers, rows) {
+      const head = headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("");
+      const body = rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
+      return `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+    }
+    function updateDashboard() {
+      const filtered = filterRows();
+      const total = sum(filtered, "ca");
+      const growth = avg(filtered, "growth");
+      const margin = avg(filtered, "margin");
+      const share = avg(filtered, "share");
+      const byCountry = groupStats(filtered, "pays");
+      const byRegion = groupStats(filtered, "region");
+      const bySegment = groupStats(filtered, "segment");
+      const byYear = yearlyStats(filtered);
+
+      document.getElementById("kpi-total").textContent = formatMoney(total);
+      document.getElementById("kpi-growth").textContent = formatPct(growth);
+      document.getElementById("kpi-margin").textContent = formatPct(margin);
+      document.getElementById("kpi-share").textContent = formatPct(share);
+      document.getElementById("kpi-country").textContent = byCountry[0]?.label ?? "n/a";
+      document.getElementById("kpi-country-desc").textContent = byCountry[0] ? `${formatMoney(byCountry[0].revenue)} de CA.` : "Aucune donnée après filtrage.";
+      document.getElementById("kpi-segment").textContent = bySegment[0]?.label ?? "n/a";
+      document.getElementById("kpi-segment-desc").textContent = bySegment[0] ? `${formatMoney(bySegment[0].revenue)} de CA.` : "Aucune donnée après filtrage.";
+      document.getElementById("status-line").textContent = `Filtre actif: ${filtered.length} ligne(s) sur ${baseData.length}.`;
+
+      document.getElementById("chart-country").innerHTML = renderBarChart("CA par pays", byCountry, "#173d4d");
+      document.getElementById("chart-region").innerHTML = renderBarChart("CA par région", byRegion, "#e07a2f");
+      document.getElementById("chart-segment").innerHTML = renderBarChart("CA par segment", bySegment, "#5f7c8a");
+      document.getElementById("chart-year").innerHTML = renderLineChart("CA annuel", byYear, "#173d4d");
+
+      document.getElementById("table-country").innerHTML = renderTable(
+        ["Pays", "CA", "Croissance moy.", "Marge brute moy.", "Part de marché moy.", "Lignes"],
+        byCountry.map((item) => [
+          item.label,
+          formatMoney(item.revenue),
+          formatPct(item.avgGrowth),
+          formatPct(item.avgMargin),
+          formatPct(item.avgShare),
+          formatCount(item.rows),
+        ])
+      );
+      document.getElementById("table-segment").innerHTML = renderTable(
+        ["Segment", "CA", "Croissance moy.", "Marge brute moy.", "Part de marché moy.", "Lignes"],
+        bySegment.map((item) => [
+          item.label,
+          formatMoney(item.revenue),
+          formatPct(item.avgGrowth),
+          formatPct(item.avgMargin),
+          formatPct(item.avgShare),
+          formatCount(item.rows),
+        ])
+      );
+
+      const topRows = filtered.slice().sort((a, b) => (b.ca - a.ca) || ((b.growth ?? -Infinity) - (a.growth ?? -Infinity))).slice(0, 10);
+      document.getElementById("table-raw").innerHTML = renderTable(
+        ["Année", "Région", "Pays", "Segment", "CA", "Croissance", "Marge brute", "Part de marché"],
+        topRows.map((row) => [
+          row.annee,
+          row.region,
+          row.pays,
+          row.segment,
+          formatMoney(row.ca),
+          formatPct(row.growth),
+          formatPct(row.margin),
+          formatPct(row.share),
+        ])
+      );
+    }
+    const syncState = () => {
+      state.annee = document.getElementById("filter-year").value;
+      state.region = document.getElementById("filter-region").value;
+      state.pays = document.getElementById("filter-country").value;
+      state.segment = document.getElementById("filter-segment").value;
+      updateDashboard();
+    };
+    document.getElementById("filter-year").addEventListener("change", syncState);
+    document.getElementById("filter-region").addEventListener("change", syncState);
+    document.getElementById("filter-country").addEventListener("change", syncState);
+    document.getElementById("filter-segment").addEventListener("change", syncState);
+    document.getElementById("reset-filters").addEventListener("click", () => {
+      document.getElementById("filter-year").value = "ALL";
+      document.getElementById("filter-region").value = "ALL";
+      document.getElementById("filter-country").value = "ALL";
+      document.getElementById("filter-segment").value = "ALL";
+      syncState();
+    });
+    updateDashboard();
+  </script>
+</body>
+</html>
